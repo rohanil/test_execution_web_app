@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <meta http-equiv="refresh" content="10">
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <title>Test Executor App</title>
+  <h1>Test Execution Results</h1>
+  <form action="" method=post enctype=multipart/form-data>
+       Create new Test Execution Request:<br>
+       Requester:
+       <input type=text name=requester required><br>
+       Test Environment:
+       <select name=env>
+         {% for id in available_ids %}
+         <option value={{ id }}>{{ id }}</option>
+         {% endfor %}
+       </select><br>
+       Test Template:
+       <select name=template>
+         <option value=test_sample_successful>test_sample_successful</option>
+         <option value=test_sample_failing>test_sample_failing</option>
+       </select>
+       Custom Path (Relative to autotest/tests/):
+       <input type=text name=path><br>
+       <input type=submit value=Submit>
+  </form>
+
+  <table>
+    <tr>
+      <th>Request ID</th>
+      <th>Requester</th>
+      <th>Created</th>
+      <th>Test Environment</th>
+      <th>Template</th>
+      <th>Status</th>
+    </tr>
+    {% for request in all_requests %}
+    <tr>
+      <td>{{ request.id }}</td>
+      <td>{{ request.requester }}</td>
+      <td>{{ request.created_at }}</td>
+      <td>{{ request.environment_id }}</td>
+      <td>{{ request.template }}</td>
+      {% if request.status == 'Failed' %}
+        <td><a href="{{ url_for('get_stacktrace', req_id=request.id) }}">Failed</a></td>
+      {% else %}
+        <td>{{ request.status }}</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+
+</html>
